@@ -574,7 +574,7 @@ We need the object that inherits to also have the `this`  methods and properties
 ```javascript
 	
 	var EventEmitter = require('events');
-	
+
 	class Greetr extends EventEmitter {
 		constructor() {
 			super();
@@ -587,3 +587,19 @@ We need the object that inherits to also have the `this`  methods and properties
 		}
 	}
 ```
+
+# Synchrony
+Javascript is synchronous
+Node.js  is asynchronous 
+## libuv
+A C library inside node that deal events occurring in the operating system
+### Buffer
+Limited size, temporary place for data being moved from one place to another 
+### Stream
+A sequence of data made available over time
+### Binary data
+Data store in binary
+### Character sets
+A representation of characters as numbers (Unicode, Ascii...)
+### Encoding
+How characters are stored in binary (UTF-8). Bits used to represent each number
