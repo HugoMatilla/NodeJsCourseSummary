@@ -695,9 +695,154 @@ Data is split in 'chunks' and streamed
 	});
 ```
 ## Pipes
-Connecting two streams by writing o one stream what is being read from another
+Conn ecting two streams by writing o one stream what is being read from another
 In node read from Readable stream to a Writable stream
 
+``` javascript
+	
+	var fs = require('fs');
+	var zlib = require('zlib');
 
+	var readable = fs.createReadStream(__dirname + '/greet.txt');
+
+	var writable = fs.createWriteStream(__dirname + '/greetcopy.txt');
+
+	var compressed = fs.createWriteStream(__dirname + '/greet.txt.gz');
+
+	var gzip = zlib.createGzip();
+
+	readable.pipe(writable); // Same as forehead sample
+
+	readable.pipe(gzip).pipe(compressed); // Chain pipes
+```
+### Method chaining
+A Method returns  an object so we can keep calling more methods.  
+When it returns the parent object is called "cascading".  
+
+# HTTP
+#### Protocol
+A set of rules two sides agree on the use communicating.  
+IP : Internet Protocol. Addresses  
+TCP: Transmission Control Protocol. Send Packets   
+#### Port
+Which program in a computer handles a packet received.  
+#### HTTP
+A set of rules and format for data being transferred on the web  
+'Hypertext Transfer Protocol' (how the messages are written)  
+####MIME Type
+A standard for specifying the type of the data being sent  
+'Multipurpose Internet Mail Extensions'  
+Examples: application/json, text/html, image/jpeg  
+
+## http_parser
+C program that parse http requests and responses
+
+## HTTP server
+
+```javascript
+
+	var http = require('http');
+
+	http.createServer(function (req, res) {
+
+	  res.writeHead(200, {'Content-Type': 'text/plain'});
+	  res.end('Hello World\n');
+
+	}).listen(1337, '127.0.0.1');
+
+```
+## Output HTML and Templates
+```javascript
+
+	var http = require('http');
+	var fs = require('fs');
+
+	http.createServer(function(req, res) {
+	    
+	    res.writeHead(200, { 'Content-Type': 'text/html' });
+	    var html = fs.readFileSync(__dirname + '/index.htm', 'utf8');
+	    var message = 'Hello world...';
+	    html = html.replace('{Message}', message);
+	    res.end(html);
+	    
+	}).listen(1337, '127.0.0.1');
+```
+#### Template
+Text designed to be the basis for final text or content after being processed
+## Streams and Performance 
+We can send chunks of data instead all at once using Streams and piping it to the response.  
+Use it always.
+```javascript
+
+	var http = require('http');
+	var fs = require('fs');
+
+	http.createServer(function(req, res) {
+	    
+	    res.writeHead(200, { 'Content-Type': 'text/html' });
+	    fs.createReadStream(__dirname + '/index.htm').pipe(res);
+	    
+	}).listen(1337, '127.0.0.1');
+```
+
+#### API
+Application Programing Interface.
+In node's field URLs which accept and send only data via HTTP and TCP/IP
+
+#### Endpoint
+One URL in a web API
+
+## Outputting a JSON
+```javascript
+	
+	var http = require('http');
+	var fs = require('fs');
+
+	http.createServer(function(req, res) {
+	    
+	    res.writeHead(200, { 'Content-Type': 'application/json' });
+	    var obj = {
+	        firstname: 'John',
+	        lastname: 'Doe'
+	    };
+	    res.end(JSON.stringify(obj));
+	    
+	}).listen(1337, '127.0.0.1');
+```
+####Serialize
+Translating and object into a format that can be stored or transferred.  
+JSON, CSV, XML are popular.  
+'Deserialize' is the opposite (converting the format back into an object)
+
+## Routing
+Mapping HTTP requests to content.  
+Get data in the server from parameters in the http call.
+
+```javascript
+	
+	var http = require('http');
+	var fs = require('fs');
+
+	http.createServer(function(req, res) {
+	    
+	    if (req.url === '/') {
+	        fs.createReadStream(__dirname + '/index.htm').pipe(res);
+	    }
+	    
+	    else if (req.url === '/api') {
+	        res.writeHead(200, { 'Content-Type': 'application/json' });
+	        var obj = {
+	            firstname: 'John',
+	            lastname: 'Doe'
+	        };
+	        res.end(JSON.stringify(obj));
+	    }
+	    else {
+	        res.writeHead(404);
+	        res.end();
+	    }
+	    
+	}).listen(1337, '127.0.0.1');
+```
 
 
