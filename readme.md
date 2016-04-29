@@ -465,7 +465,7 @@ Allow us create objects with the Emitter properties
 	var EventEmitter = require('events');
 	var util = require('util');
 
-	function Greetr() { // This is call a function constructor 
+	function Greetr() { // This is call to a "function constructor"
 		this.greeting = 'Hello world!';
 	}
 
@@ -483,4 +483,107 @@ Allow us create objects with the Emitter properties
 	});
 
 	greeter1.greet('Tony');
+```
+
+## ES5
+### Template literals
+A way to concatenate strings in ES6
+```javascript
+
+	var greet2 = `Hello ${ name }`;
+```
+
+### call() and apply()
+```javascript
+
+	var obj = {
+		name: 'John Doe',
+		greet: function() {
+			console.log(`Hello ${ this.name }`);
+		}
+	}
+
+	obj.greet();
+	obj.greet.call({ name: 'Jane Doe'}); // this will point the what is passed in call 
+	obj.greet.apply({ name: 'Jane Doe'}); // idem 
+
+	// With params we see the difference
+	var obj = {
+		name: 'John Doe',
+		greet: function(param1,param2) {
+			console.log(`Hello ${ this.name }`);
+		}
+	}
+
+	obj.greet.call({ name: 'Jane Doe'},param1,param2); 
+	obj.greet.apply({ name: 'Jane Doe'},[param1,param2]); 
+```
+## Inheriting pattern 2
+We need the object that inherits to also have the `this`  methods and properties of the inherited object.
+```javascript
+
+	function Greetr() { // This is call to a "function constructor"
+		EventEmitter.call(this) //<-- also called "super constructor"
+		this.greeting = 'Hello world!';
+	}
+
+```
+
+```javascript
+	
+	var util = require('util');
+
+	function Person() {
+		this.firstname = 'John';
+		this.lastname = 'Doe';
+	}
+
+	Person.prototype.greet = function() {
+		console.log('Hello ' + this.firstname + ' ' + this.lastname);
+	}
+
+	function Policeman() {
+		Person.call(this);// Without this line `this` object wont have firstname and lastname.
+		this.badgenumber = '1234';
+	}
+
+	util.inherits(Policeman, Person);
+	var officer = new Policeman();
+	officer.greet();
+```
+
+## ES6 Classes
+```javascript
+
+	'use strict'; // like 'lint' for javascript
+
+	class Person {
+		constructor(firstname, lastname) {
+			this.firstname = firstname;
+			this.lastname = lastname;
+		}
+		
+		greet() {
+			console.log('Hello, ' + this.firstname + ' ' + this.lastname);
+		}
+	}
+
+```
+## Inheriting in ES6 Classes
+
+```javascript
+	
+	var EventEmitter = require('events');
+	
+	class Greetr extends EventEmitter {
+		constructor() {
+			super();
+			this.greeting = 'Hello world!';
+		}
+		
+		greet(data) {
+			console.log(`${ this.greeting }: ${ data }`);
+			this.emit('greet', data);
+		}
+	}
 ```
