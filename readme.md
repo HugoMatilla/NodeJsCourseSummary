@@ -603,3 +603,101 @@ Data store in binary
 A representation of characters as numbers (Unicode, Ascii...)
 ### Encoding
 How characters are stored in binary (UTF-8). Bits used to represent each number
+## Buffers
+Needed because javascript was not used to deal with binary data. In ES6 it does using ArrayBuffer
+```javascript
+	
+	var buf = new Buffer('Hello', 'utf8');
+	console.log(buf); //<Buffer 48 65 6c 6c 6f>
+	console.log(buf.toString()); //Hello
+	console.log(buf.toJSON()); // { type: 'Buffer', data: [ 72, 101, 108, 108, 111 ] }
+	console.log(buf[2]); //108
+
+	buf.write('wo');
+	console.log(buf.toString()); // wollo
+```
+## ArrayBuffer
+[ArrayBuffer Docs](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Typed_arrays)
+```javascript
+
+	var buffer = new ArrayBuffer(8);
+	var view = new Int32Array(buffer);
+	view[0] = 5;
+	view[1] = 15;
+	console.log(view);	//Int32Array { '0': 5, '1': 15 }
+```
+## Callbacks
+```javascript
+
+	function greet(callback) {
+		console.log('Hello!');
+		var data = {
+			name: 'John Doe'
+		};
+		
+		callback(data);
+	}
+
+	greet(function(data) {
+		console.log('The callback was invoked!');
+		console.log(data);
+	});
+
+	greet(function(data) {
+		console.log('A different callback was invoked!');
+		console.log(data.name);
+	});
+
+	//Hello!
+	//The callback was invoked!
+	//{ name: 'John Doe' }
+	//Hello!
+	//A different callback was invoked!
+	//John Doe
+```
+## Files
+```javascript
+
+	var fs = require('fs');
+
+	//synchronous
+	var greet = fs.readFileSync(__dirname + '/greet.txt', 'utf8');
+	console.log(greet); //#1
+
+	//asynchronous
+	var greet2 = fs.readFile(__dirname + '/greet.txt', 'utf8', function(err, data) {
+		console.log(data);//#3
+	});
+
+	console.log('Done!');//#2
+```
+### Error First Callback
+Callbacks take en error object as their first parameter.   
+The Standard.  
+null if no error. 
+
+## Streams
+### Chunk
+A piece of data being sent through a Stream
+Data is split in 'chunks' and streamed
+```javascript
+
+	var fs = require('fs');
+
+	var readable = fs.createReadStream(__dirname + '/greet.txt', { encoding: 'utf8', highWaterMark: 16 * 1024 }); // highWaterMark numebr of the buffer
+
+	var writable = fs.createWriteStream(__dirname + '/greetcopy.txt');
+
+	readable.on('data', function(chunk) { // Event emitter, just listenting the event starts the buffer
+		console.log(chunk.length);
+		// console.log(chunk);
+		writable.write(chunk);
+	});
+```
+## Pipes
+Connecting two streams by writing o one stream what is being read from another
+In node read from Readable stream to a Writable stream
+
+
+
+
