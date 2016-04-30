@@ -844,5 +844,296 @@ Get data in the server from parameters in the http call.
 	    
 	}).listen(1337, '127.0.0.1');
 ```
+#NPM
+#### Semantic Versioning
+MAYOR.MINOR.PATCH
+## Package.json
+`npm init`  
+`npm install moment --save` The `--save` writes a reference in package.json 
+
+```javascript
+
+	"dependencies": {
+		"moment": "^2.13.0" // ^ automatically updates minors ~ updates only patches
+	}
+```
+
+
+`npm install` : Once we have the package.json we dont need to copy the modules in a new environment, just calling `npm install` will download everything for us
+
+`require` will look directly in the `node_modules` folder
+
+```javascript
+
+	var moment = require('moment');
+	console.log(moment().format("ddd, hA"));
+```
+## Global dependencies
+Install dependencies that we only need while developing  
+`npm install jasmine-node --save-dev`  
+Install globally, if we kwow we will us a package in many apps in our computer  
+`npm install nodemon -g`  
+They are stored at `/usr/local/lib/node_modules/npm/node_modules`
+
+####nodemon
+It watches changes in the folder
+
+# Express
+```javascript
+
+	var express = require('express');
+	var app = express();
+
+	var port = process.env.PORT || 3000;
+
+	app.get('/', function(req, res) {
+		res.send('<html><head></head><body><h1>Hello world!</h1></body></html>');
+	});
+
+	app.get('/api', function(req, res) {
+		res.json({ firstname: 'John', lastname: 'Doe' });
+	});
+
+	app.listen(port);
+```
+#### Environment variables
+Global variables specific to the environment (server) our code is living in.
+####Http method (verbs)
+Specific type of action the request wishes to make.
+GET, POST, DELETE...
+##Routes
+```javascript
+
+	app.get('/person/:id', function(req, res) {
+		res.send('<html><head></head><body><h1>Person: ' + req.params.id + '</h1></body></html>');
+	});
+```
+
+## Static Files and Middleware
+####Midleware
+Code that sit between 2 layers of software.  
+In Express:  sitting between request and response
+```javascript
+
+	app.use('/assets', express.static(__dirname + '/public'));
+
+	app.use('/', function (req, res, next) {
+		console.log('Request Url:' + req.url);
+		next(); // call the next Middleware
+	});
+	app.get('/', function(req, res) {
+		res.send('<html><head><link href=assets/style.css type=text/css rel=stylesheet /></head><body><h1>Hello world!</h1></body></html>');
+	});
+```
+## Templates and Template Engines
+```javascript
+	
+	...
+
+	app.set('view engine', 'ejs');
+
+	app.get('/', function(req, res) {
+		res.render('index');
+	});
+
+	app.get('/person/:id', function(req, res) {
+		res.render('person', { ID: req.params.id }); 
+	});
+	...
+
+```
+```html
+	
+	<html>
+		<head>
+			<link href="/assets/style.css" type="text/css" rel="stylesheet" /> // important the / before the path of the css
+		</head>
+		<body>
+			<h1>Person: <%= ID %></h1>
+		</body>
+	</html>
+```
+# Querystring and Post Parameters
+##Querystring
+```javascript
+
+	GET /?id=4&page=3 HTTP/1.1
+	Host:www.learnweb.net
+	Cookie:username=abc:name:Tony
+```
+```javascript
+
+	app.get('/person/:id', function(req, res) {
+		res.render('person', { ID: req.params.id, Qstr: req.query.qstr }); //req.query get the querystring
+	});
+```
+##Form Post
+Data in the body as objects
+Use body-parser
+
+```javascript
+
+	POST HTTP/1.1
+	Host:www.learnweb.net
+	Content-Type:application/x-www-form-urlencoded
+	Cookie:num=4;page=3
+	username=Tony&password=pwd
+``` 
+
+```javascript
+
+	var bodyParser = require('body-parser');
+	var urlencodedParser = bodyParser.urlencoded({ extended: false });
+
+	app.post('/person', urlencodedParser, function(req, res) {
+		res.send('Thank you!');
+		console.log(req.body.firstname);
+		console.log(req.body.lastname);
+	});
+```
+```html
+
+	<form method="POST" action="/person">
+		First name: <input type="text" id="firstname" name="firstname" /><br />
+		Last name: <input type="text" id="lastname" name="lastname" /><br />
+		<input type="submit" value="Submit" />
+	</form>
+```
+##Post as json
+Data in the body as json
+```javascript
+
+	POST HTTP/1.1
+	Host:www.learnweb.net
+	Content-Type:application/json
+	Cookie:num=4;page=3
+	{
+		'username'='Tony',
+		'password'='pwd'
+	}
+``` 
+
+```javascript
+	
+	var jsonParser = bodyParser.json();
+
+	app.post('/personjson', jsonParser, function(req, res) {
+		res.send('Thank you for the JSON data!');
+		console.log(req.body.firstname);
+		console.log(req.body.lastname);
+	});
+```
+
+```html
+
+	<script>
+		$.ajax({
+			type: "POST",
+			url: "/personjson",
+			data: JSON.stringify({ firstname: 'Jane', lastname: 'Doe' }),
+			dataType: 'json',
+			contentType: 'application/json'
+		});
+	</script>
+```
+#RESTful API and JSON
+####REST
+Representational State Transfer. Which HTTP verbs and URLs do what.
+
+```javascript
+
+	app.get('/api/person/:id', function(req, res) {
+		// get that data from database
+		res.json({ firstname: 'John', lastname: 'Doe' });
+	});
+
+	app.post('/api/person', jsonParser, function(req, res) {
+		// save to the database
+	});
+
+	app.delete('/api/person/:id', function(req, res) {
+		// delete from the database
+	});
+```
+
+#Structuring the Application in Express
+`install express-generator -g` // do it global
+`express <my app name>`// Create the architecture
+`cd <my app name>` // go to the app
+`npm install` // install the packages
+
+## Our own Version
+Using controllers
+
+**app.js**
+```javascript
+
+	var express = require('express');
+	var app = express();
+
+	var apiController = require('./controllers/apiController');
+	var htmlController = require('./controllers/htmlController');
+
+	var port = process.env.PORT || 3000;
+
+	app.use('/assets', express.static(__dirname + '/public'));
+
+	app.set('view engine', 'ejs');
+
+	app.use('/', function (req, res, next) {
+		console.log('Request Url:' + req.url);
+		next();
+	});
+
+	htmlController(app);
+	apiController(app);
+
+	app.listen(port);
+```
+**htmlController**
+```javascript
+
+	var bodyParser = require('body-parser');
+
+	var urlencodedParser = bodyParser.urlencoded({ extended: false });
+
+	module.exports = function(app) {
+		
+		app.get('/', function(req, res) {
+			res.render('index');
+		});
+		
+		app.get('/person/:id', function(req, res) {
+			res.render('person', { ID: req.params.id, Qstr: req.query.qstr });
+		});
+		
+		app.post('/person', urlencodedParser, function(req, res) {
+			res.send('Thank you!');
+			console.log(req.body.firstname);
+			console.log(req.body.lastname);
+		});
+	}
+```
+
+**apiController**
+```javascript
+
+	module.exports = function(app) {
+
+		app.get('/api/person/:id', function(req, res) {
+		// get that data from database
+			res.json({ firstname: 'John', lastname: 'Doe' });
+		});
+
+		app.post('/api/person', function(req, res) {
+			// save to the database
+		});
+
+		app.delete('/api/person/:id', function(req, res) {
+			// delete from the database
+		});
+	}
+```
+
 
 
