@@ -1,4 +1,103 @@
-#Needs to make a web server
+<!-- TOC depthFrom:1 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 -->
+
+- [1.Intro](#1intro)
+	- [Needs to make a web server](#needs-to-make-a-web-server)
+- [2.Modules, Export and Require](#2modules-export-and-require)
+	- [Modules](#modules)
+	- [Build a module](#build-a-module)
+			- [Name value pair](#name-value-pair)
+			- [Object](#object)
+			- [Object Literal](#object-literal)
+	- [Prototypal inheritance](#prototypal-inheritance)
+	- [Function constructor](#function-constructor)
+	- [Immediately Invoked Functions Expressions (IIFEs)](#immediately-invoked-functions-expressions-iifes)
+	- [How Modules Work](#how-modules-work)
+	- [Require](#require)
+	- [Module Patterns](#module-patterns)
+			- [Use always  `module.exports` instead of `export` although they do the same.](#use-always-moduleexports-instead-of-export-although-they-do-the-same)
+	- [Native Modules](#native-modules)
+	- [Modules and ES6](#modules-and-es6)
+- [3.Events And EventEmitter](#3events-and-eventemitter)
+	- [Events](#events)
+		- [Object Properties and Methods](#object-properties-and-methods)
+		- [Functions and Arrays](#functions-and-arrays)
+	- [Node Event Emitter](#node-event-emitter)
+		- [Event Listener](#event-listener)
+		- [Our Event Emitter](#our-event-emitter)
+		- [Magic String](#magic-string)
+	- [Prototype chain](#prototype-chain)
+	- [Inheriting from event emitter](#inheriting-from-event-emitter)
+	- [ES5](#es5)
+		- [Template literals](#template-literals)
+		- [call() and apply()](#call-and-apply)
+	- [Inheriting pattern 2](#inheriting-pattern-2)
+	- [ES6 Classes](#es6-classes)
+	- [Inheriting in ES6 Classes](#inheriting-in-es6-classes)
+- [4.Synchrony](#4synchrony)
+			- [libuv](#libuv)
+			- [Buffer](#buffer)
+			- [Stream](#stream)
+			- [Binary data](#binary-data)
+			- [Character sets](#character-sets)
+			- [Encoding](#encoding)
+	- [Buffers](#buffers)
+	- [ArrayBuffer](#arraybuffer)
+	- [Callbacks](#callbacks)
+	- [Files](#files)
+			- [Error First Callback](#error-first-callback)
+	- [Streams](#streams)
+			- [Chunk](#chunk)
+	- [Pipes](#pipes)
+			- [Method chaining](#method-chaining)
+- [5.HTTP](#5http)
+			- [Protocol](#protocol)
+			- [Port](#port)
+			- [HTTP](#http)
+			- [MIME Type](#mime-type)
+			- [http_parser](#httpparser)
+	- [HTTP server](#http-server)
+	- [Output HTML and Templates](#output-html-and-templates)
+			- [Template](#template)
+	- [Streams and Performance](#streams-and-performance)
+			- [API](#api)
+			- [Endpoint](#endpoint)
+	- [Outputting a JSON](#outputting-a-json)
+			- [Serialize](#serialize)
+	- [Routing](#routing)
+- [6.NPM](#6npm)
+			- [Semantic Versioning](#semantic-versioning)
+	- [Package.json](#packagejson)
+	- [Global dependencies](#global-dependencies)
+			- [nodemon](#nodemon)
+- [7.Express](#7express)
+			- [Environment variables](#environment-variables)
+			- [Http method (verbs)](#http-method-verbs)
+	- [Routes](#routes)
+	- [Static Files and Middleware](#static-files-and-middleware)
+			- [Midleware](#midleware)
+	- [Templates and Template Engines](#templates-and-template-engines)
+	- [Querystring and Post Parameters](#querystring-and-post-parameters)
+		- [Querystring](#querystring)
+		- [Form Post](#form-post)
+		- [Post as json](#post-as-json)
+	- [RESTful API and JSON](#restful-api-and-json)
+			- [REST](#rest)
+	- [Structuring the Application](#structuring-the-application)
+		- [Structuring with Express](#structuring-with-express)
+		- [Our own Structure](#our-own-structure)
+- [8.MEAN](#8mean)
+			- [DOM](#dom)
+	- [Angular](#angular)
+	- [Separating Server code from Client code](#separating-server-code-from-client-code)
+- [9.Build an app](#9build-an-app)
+	- [1. Init](#1-init)
+	- [2. Connect to the Database](#2-connect-to-the-database)
+	- [3. Adding Data](#3-adding-data)
+	- [4. Create the API](#4-create-the-api)
+
+<!-- /TOC -->
+#1.Intro
+##Needs to make a web server
 
 * Better ways to organize our code into reusable pieces
 * Ways to deal with files
@@ -8,7 +107,7 @@
 * A way to deal with work that takes long time
 
 
-#Modules, Export and Require
+#2.Modules, Export and Require
 ##Modules
 Reusable block of code whose existence does not accidentally impact other code
 
@@ -68,13 +167,13 @@ A block of code that results in a value
 
 	module.exports = greet;
 ```
-###Name value pair
-A name which maps to a value.  
-The name can be defined more than once, but only can have one value in any given **context**  
+####Name value pair
+A name which maps to a value.
+The name can be defined more than once, but only can have one value in any given **context**
 `Address = "Sesam street"`
-###Object
+####Object
 Collection of name/value pairs
-###Object Literal
+####Object Literal
 Name/value pairs separated by commas and surrounded by curly braces
 ```javascript
 
@@ -87,7 +186,7 @@ Name/value pairs separated by commas and surrounded by curly braces
 		},
 		greet: function(){
 				console.log('Hello ' + this.name + ' ' + this.lastname )
-		}	
+		}
 	};
 
 	person.greet();
@@ -96,7 +195,7 @@ Name/value pairs separated by commas and surrounded by curly braces
 ## Prototypal inheritance
 Every object points to a `proto{}` object
 
-## Function constructor 
+## Function constructor
 A function used to build objects using `new`
 ```javascript
 
@@ -104,7 +203,7 @@ A function used to build objects using `new`
 		this.firstname = firstname;
 		this.lastname = lastname;
 	}
-	
+
 
 	Person.prototype.greet = function() {
 		console.log('Hello, ' + this.firstname + ' ' + this.lastname);
@@ -118,7 +217,7 @@ A function used to build objects using `new`
 ## Immediately Invoked Functions Expressions (IIFEs)
 Run the function at the point it is created. Add a `()` after its declaration.
 ```javascript
-	
+
 	var firstname = 'Jane';
 
 	(function (lastname) {
@@ -126,16 +225,16 @@ Run the function at the point it is created. Add a `()` after its declaration.
 		var firstname = 'John';
 		console.log(firstname);
 		console.log(lastname);
-		
+
 	}('Doe'));
 
 	console.log(firstname);
 ```
 
-## Module
-`require` is a function, that you pass a 'path' to  
-`module.exports` is what the require function returns   
-this works because your code is actually wrapped in a function that is given these things as function parameters  
+## How Modules Work
+`require` is a function, that you pass a 'path' to
+`module.exports` is what the require function returns
+this works because your code is actually wrapped in a function that is given these things as function parameters
 
 **app.js**
 ```javascript
@@ -157,7 +256,7 @@ this works because your code is actually wrapped in a function that is given the
 
 **app.js**
 ```javascript
-	
+
 	var greet = require('./greet');
 
 	greet.english();
@@ -165,13 +264,13 @@ this works because your code is actually wrapped in a function that is given the
 ```
 **greet/index.js**
 ```javascript
-	
+
 	var english = require('./english');
 	var spanish = require('./spanish');
 
 	module.exports = {
 		english: english,
-		spanish: spanish	
+		spanish: spanish
 	};
 ```
 **greet/english.js**
@@ -210,7 +309,7 @@ this works because your code is actually wrapped in a function that is given the
 
 **app.js**
 ```javascript
-	
+
 	var greet = require('./greet1');
 	greet();
 
@@ -234,7 +333,7 @@ this works because your code is actually wrapped in a function that is given the
 
 **greet1.js**
 ```javascript
-	
+
 	module.exports = function() {
 		console.log('Hello world');
 	};
@@ -294,7 +393,7 @@ Revealing module pattern: Exposing only the properties and methods you want via 
 [nodejs.org/api](nodejs.org/api)
 
 ```javascript
-	
+
 	var util = require('util');
 
 	var name = 'Tony';
@@ -317,7 +416,7 @@ Revealing module pattern: Exposing only the properties and methods you want via 
 	import * as greetr from 'greet';
 	greetr.greet();
 ```
-
+#3.Events And EventEmitter
 ##Events
 Something that has happened in our application that we can respond to
 
@@ -361,7 +460,7 @@ Something that has happened in our application that we can respond to
 ### Event Listener
 The code that responds to an event
 ### Our Event Emitter
-**Emitter.js**	
+**Emitter.js**
 ```javascript
 
 	function Emitter() {
@@ -401,7 +500,7 @@ The code that responds to an event
 	console.log('Hello!');
 	emtr.emit('greet');
 ```
-###Magic String
+### Magic String
 A String that has some special meaning in our code. Bad because of typos.
 Use config files instead.
 ```javascript
@@ -492,7 +591,12 @@ A way to concatenate strings in ES6
 
 	var greet2 = `Hello ${ name }`;
 ```
+```javascript
 
+	var a = 5;
+	var b = 10;
+	console.log(`Fifteen is ${a + b} and\nnot ${2 * a + b}.`);
+```
 ### call() and apply()
 ```javascript
 
@@ -504,8 +608,8 @@ A way to concatenate strings in ES6
 	}
 
 	obj.greet();
-	obj.greet.call({ name: 'Jane Doe'}); // this will point the what is passed in call 
-	obj.greet.apply({ name: 'Jane Doe'}); // idem 
+	obj.greet.call({ name: 'Jane Doe'}); // this will point the what is passed in call
+	obj.greet.apply({ name: 'Jane Doe'}); // idem
 
 	// With params we see the difference
 	var obj = {
@@ -515,8 +619,8 @@ A way to concatenate strings in ES6
 		}
 	}
 
-	obj.greet.call({ name: 'Jane Doe'},param1,param2); 
-	obj.greet.apply({ name: 'Jane Doe'},[param1,param2]); 
+	obj.greet.call({ name: 'Jane Doe'},param1,param2);
+	obj.greet.apply({ name: 'Jane Doe'},[param1,param2]);
 ```
 ## Inheriting pattern 2
 We need the object that inherits to also have the `this`  methods and properties of the inherited object.
@@ -530,7 +634,7 @@ We need the object that inherits to also have the `this`  methods and properties
 ```
 
 ```javascript
-	
+
 	var util = require('util');
 
 	function Person() {
@@ -562,7 +666,7 @@ We need the object that inherits to also have the `this`  methods and properties
 			this.firstname = firstname;
 			this.lastname = lastname;
 		}
-		
+
 		greet() {
 			console.log('Hello, ' + this.firstname + ' ' + this.lastname);
 		}
@@ -572,7 +676,7 @@ We need the object that inherits to also have the `this`  methods and properties
 ## Inheriting in ES6 Classes
 
 ```javascript
-	
+
 	var EventEmitter = require('events');
 
 	class Greetr extends EventEmitter {
@@ -580,7 +684,7 @@ We need the object that inherits to also have the `this`  methods and properties
 			super();
 			this.greeting = 'Hello world!';
 		}
-		
+
 		greet(data) {
 			console.log(`${ this.greeting }: ${ data }`);
 			this.emit('greet', data);
@@ -588,25 +692,25 @@ We need the object that inherits to also have the `this`  methods and properties
 	}
 ```
 
-# Synchrony
+#4.Synchrony
 Javascript is synchronous
-Node.js  is asynchronous 
-## libuv
+Node.js  is asynchronous
+#### libuv
 A C library inside node that deal events occurring in the operating system
-### Buffer
-Limited size, temporary place for data being moved from one place to another 
-### Stream
+#### Buffer
+Limited size, temporary place for data being moved from one place to another
+#### Stream
 A sequence of data made available over time
-### Binary data
+#### Binary data
 Data store in binary
-### Character sets
+#### Character sets
 A representation of characters as numbers (Unicode, Ascii...)
-### Encoding
+#### Encoding
 How characters are stored in binary (UTF-8). Bits used to represent each number
 ## Buffers
 Needed because javascript was not used to deal with binary data. In ES6 it does using ArrayBuffer
 ```javascript
-	
+
 	var buf = new Buffer('Hello', 'utf8');
 	console.log(buf); //<Buffer 48 65 6c 6c 6f>
 	console.log(buf.toString()); //Hello
@@ -634,7 +738,7 @@ Needed because javascript was not used to deal with binary data. In ES6 it does 
 		var data = {
 			name: 'John Doe'
 		};
-		
+
 		callback(data);
 	}
 
@@ -671,13 +775,13 @@ Needed because javascript was not used to deal with binary data. In ES6 it does 
 
 	console.log('Done!');//#2
 ```
-### Error First Callback
-Callbacks take en error object as their first parameter.   
-The Standard.  
-null if no error. 
+#### Error First Callback
+Callbacks take en error object as their first parameter.
+The Standard.
+null if no error.
 
 ## Streams
-### Chunk
+#### Chunk
 A piece of data being sent through a Stream
 Data is split in 'chunks' and streamed
 ```javascript
@@ -699,7 +803,7 @@ Conn ecting two streams by writing o one stream what is being read from another
 In node read from Readable stream to a Writable stream
 
 ``` javascript
-	
+
 	var fs = require('fs');
 	var zlib = require('zlib');
 
@@ -715,26 +819,26 @@ In node read from Readable stream to a Writable stream
 
 	readable.pipe(gzip).pipe(compressed); // Chain pipes
 ```
-### Method chaining
-A Method returns  an object so we can keep calling more methods.  
-When it returns the parent object is called "cascading".  
+#### Method chaining
+A Method returns  an object so we can keep calling more methods.
+When it returns the parent object is called "cascading".
 
-# HTTP
+#5.HTTP
 #### Protocol
-A set of rules two sides agree on the use communicating.  
-IP : Internet Protocol. Addresses  
-TCP: Transmission Control Protocol. Send Packets   
+A set of rules two sides agree on the use communicating.
+IP : Internet Protocol. Addresses
+TCP: Transmission Control Protocol. Send Packets
 #### Port
-Which program in a computer handles a packet received.  
+Which program in a computer handles a packet received.
 #### HTTP
-A set of rules and format for data being transferred on the web  
-'Hypertext Transfer Protocol' (how the messages are written)  
-####MIME Type
-A standard for specifying the type of the data being sent  
-'Multipurpose Internet Mail Extensions'  
-Examples: application/json, text/html, image/jpeg  
+A set of rules and format for data being transferred on the web
+'Hypertext Transfer Protocol' (how the messages are written)
+#### MIME Type
+A standard for specifying the type of the data being sent
+'Multipurpose Internet Mail Extensions'
+Examples: application/json, text/html, image/jpeg
 
-## http_parser
+#### http_parser
 C program that parse http requests and responses
 
 ## HTTP server
@@ -758,19 +862,19 @@ C program that parse http requests and responses
 	var fs = require('fs');
 
 	http.createServer(function(req, res) {
-	    
+
 	    res.writeHead(200, { 'Content-Type': 'text/html' });
 	    var html = fs.readFileSync(__dirname + '/index.htm', 'utf8');
 	    var message = 'Hello world...';
 	    html = html.replace('{Message}', message);
 	    res.end(html);
-	    
+
 	}).listen(1337, '127.0.0.1');
 ```
 #### Template
 Text designed to be the basis for final text or content after being processed
-## Streams and Performance 
-We can send chunks of data instead all at once using Streams and piping it to the response.  
+## Streams and Performance
+We can send chunks of data instead all at once using Streams and piping it to the response.
 Use it always.
 ```javascript
 
@@ -778,10 +882,10 @@ Use it always.
 	var fs = require('fs');
 
 	http.createServer(function(req, res) {
-	    
+
 	    res.writeHead(200, { 'Content-Type': 'text/html' });
 	    fs.createReadStream(__dirname + '/index.htm').pipe(res);
-	    
+
 	}).listen(1337, '127.0.0.1');
 ```
 
@@ -794,41 +898,41 @@ One URL in a web API
 
 ## Outputting a JSON
 ```javascript
-	
+
 	var http = require('http');
 	var fs = require('fs');
 
 	http.createServer(function(req, res) {
-	    
+
 	    res.writeHead(200, { 'Content-Type': 'application/json' });
 	    var obj = {
 	        firstname: 'John',
 	        lastname: 'Doe'
 	    };
 	    res.end(JSON.stringify(obj));
-	    
+
 	}).listen(1337, '127.0.0.1');
 ```
-####Serialize
-Translating and object into a format that can be stored or transferred.  
-JSON, CSV, XML are popular.  
+#### Serialize
+Translating and object into a format that can be stored or transferred.
+JSON, CSV, XML are popular.
 'Deserialize' is the opposite (converting the format back into an object)
 
 ## Routing
-Mapping HTTP requests to content.  
+Mapping HTTP requests to content.
 Get data in the server from parameters in the http call.
 
 ```javascript
-	
+
 	var http = require('http');
 	var fs = require('fs');
 
 	http.createServer(function(req, res) {
-	    
+
 	    if (req.url === '/') {
 	        fs.createReadStream(__dirname + '/index.htm').pipe(res);
 	    }
-	    
+
 	    else if (req.url === '/api') {
 	        res.writeHead(200, { 'Content-Type': 'application/json' });
 	        var obj = {
@@ -841,15 +945,15 @@ Get data in the server from parameters in the http call.
 	        res.writeHead(404);
 	        res.end();
 	    }
-	    
+
 	}).listen(1337, '127.0.0.1');
 ```
-#NPM
+#6.NPM
 #### Semantic Versioning
 MAYOR.MINOR.PATCH
 ## Package.json
-`npm init`  
-`npm install moment --save` The `--save` writes a reference in package.json 
+`npm init`
+`npm install moment --save` The `--save` writes a reference in package.json
 
 ```javascript
 
@@ -869,16 +973,16 @@ MAYOR.MINOR.PATCH
 	console.log(moment().format("ddd, hA"));
 ```
 ## Global dependencies
-Install dependencies that we only need while developing  
-`npm install jasmine-node --save-dev`  
-Install globally, if we kwow we will us a package in many apps in our computer  
-`npm install nodemon -g`  
+Install dependencies that we only need while developing
+`npm install jasmine-node --save-dev`
+Install globally, if we kwow we will us a package in many apps in our computer
+`npm install nodemon -g`
 They are stored at `/usr/local/lib/node_modules/npm/node_modules`
 
-####nodemon
+#### nodemon
 It watches changes in the folder
 
-# Express
+#7.Express
 ```javascript
 
 	var express = require('express');
@@ -898,10 +1002,10 @@ It watches changes in the folder
 ```
 #### Environment variables
 Global variables specific to the environment (server) our code is living in.
-####Http method (verbs)
+#### Http method (verbs)
 Specific type of action the request wishes to make.
 GET, POST, DELETE...
-##Routes
+## Routes
 ```javascript
 
 	app.get('/person/:id', function(req, res) {
@@ -910,8 +1014,8 @@ GET, POST, DELETE...
 ```
 
 ## Static Files and Middleware
-####Midleware
-Code that sit between 2 layers of software.  
+#### Midleware
+Code that sit between 2 layers of software.
 In Express:  sitting between request and response
 ```javascript
 
@@ -927,7 +1031,7 @@ In Express:  sitting between request and response
 ```
 ## Templates and Template Engines
 ```javascript
-	
+
 	...
 
 	app.set('view engine', 'ejs');
@@ -937,13 +1041,13 @@ In Express:  sitting between request and response
 	});
 
 	app.get('/person/:id', function(req, res) {
-		res.render('person', { ID: req.params.id }); 
+		res.render('person', { ID: req.params.id });
 	});
 	...
 
 ```
 ```html
-	
+
 	<html>
 		<head>
 			<link href="/assets/style.css" type="text/css" rel="stylesheet" /> // important the / before the path of the css
@@ -953,8 +1057,9 @@ In Express:  sitting between request and response
 		</body>
 	</html>
 ```
-# Querystring and Post Parameters
-##Querystring
+
+## Querystring and Post Parameters
+### Querystring
 ```javascript
 
 	GET /?id=4&page=3 HTTP/1.1
@@ -967,7 +1072,7 @@ In Express:  sitting between request and response
 		res.render('person', { ID: req.params.id, Qstr: req.query.qstr }); //req.query get the querystring
 	});
 ```
-##Form Post
+### Form Post
 Data in the body as objects
 Use body-parser
 
@@ -978,7 +1083,7 @@ Use body-parser
 	Content-Type:application/x-www-form-urlencoded
 	Cookie:num=4;page=3
 	username=Tony&password=pwd
-``` 
+```
 
 ```javascript
 
@@ -999,7 +1104,7 @@ Use body-parser
 		<input type="submit" value="Submit" />
 	</form>
 ```
-##Post as json
+### Post as json
 Data in the body as json
 ```javascript
 
@@ -1011,10 +1116,10 @@ Data in the body as json
 		'username'='Tony',
 		'password'='pwd'
 	}
-``` 
+```
 
 ```javascript
-	
+
 	var jsonParser = bodyParser.json();
 
 	app.post('/personjson', jsonParser, function(req, res) {
@@ -1036,8 +1141,8 @@ Data in the body as json
 		});
 	</script>
 ```
-#RESTful API and JSON
-####REST
+## RESTful API and JSON
+#### REST
 Representational State Transfer. Which HTTP verbs and URLs do what.
 
 ```javascript
@@ -1056,13 +1161,14 @@ Representational State Transfer. Which HTTP verbs and URLs do what.
 	});
 ```
 
-#Structuring the Application in Express
+## Structuring the Application
+### Structuring with Express
 `install express-generator -g` // do it global
 `express <my app name>`// Create the architecture
 `cd <my app name>` // go to the app
 `npm install` // install the packages
 
-## Our own Version
+### Our own Structure
 Using controllers
 
 **app.js**
@@ -1098,15 +1204,15 @@ Using controllers
 	var urlencodedParser = bodyParser.urlencoded({ extended: false });
 
 	module.exports = function(app) {
-		
+
 		app.get('/', function(req, res) {
 			res.render('index');
 		});
-		
+
 		app.get('/person/:id', function(req, res) {
 			res.render('person', { ID: req.params.id, Qstr: req.query.qstr });
 		});
-		
+
 		app.post('/person', urlencodedParser, function(req, res) {
 			res.send('Thank you!');
 			console.log(req.body.firstname);
@@ -1134,6 +1240,377 @@ Using controllers
 		});
 	}
 ```
+#8.MEAN
+#### DOM
+Document Object Model
+The structure browsers use to store and manage web pages
+Browsers give JavaScript the ability to manipulate the DOM
+## Angular
 
+**app.js**
+```javascript
 
+	var express = require('express');
+	var app = express();
 
+	var port = process.env.PORT || 3000;
+
+	app.set('view engine', 'ejs');
+	app.use('/assets', express.static(__dirname + '/public'));
+
+	app.get('/', function(req, res) {
+
+		res.render('index');
+
+	});
+
+	app.listen(port);
+```
+**view/index.ejs**
+```html
+
+	<html ng-app="TestApp">
+		<head>
+			<title>The MEAN stack</title>
+	    	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.5/angular.js"></script>
+		</head>
+		<body ng-controller="MainController as vm">
+
+			<input type="text" ng-model="vm.message" />
+			<br />
+			{{ vm.message }}
+			<br />
+			<ul>
+				<li ng-repeat="person in vm.people">
+					{{ person.name }}
+				</li>
+			</ul>
+
+			<script src="assets/js/app.js"></script>
+		</body>
+	</html>
+```
+**public/js/app.js**
+```javascript
+
+	angular.module('TestApp', []);
+
+	angular.module('TestApp')
+		.controller('MainController', ctrlFunc);
+
+	function ctrlFunc() {
+		this.message = "Hello";
+
+		this.people = [
+			{
+				name: 'John Doe'
+			},
+			{
+				name: 'Jane Doe'
+			},
+			{
+				name: 'Jim Doe'
+			}
+		]
+	}
+```
+## Separating Server code from Client code
+We can set in the server what we show in client
+**app.js**
+```javascript
+
+	var express = require('express');
+	var app = express();
+
+	var port = process.env.PORT || 3000;
+
+	var people = [
+		{
+			name: 'John Doe'
+		},
+		{
+			name: 'Jane Doe'
+		},
+		{
+			name: 'Jim Doe'
+		}
+	];
+
+	app.set('view engine', 'ejs');
+	app.use('/assets', express.static(__dirname + '/public'));
+
+	app.get('/', function(req, res) {
+
+		res.render('index', { serverPeople: people }); //<--
+
+	});
+
+	app.listen(port);
+```
+**view/index.ejs**
+```html
+
+	<html ng-app="TestApp">
+		<head>
+			<title>The MEAN stack</title>
+			<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.7/angular.js"></script>
+		</head>
+		<body ng-controller="MainController as vm">
+			<ul>
+				<li ng-repeat="person in vm.people">
+					{{ person.name }}
+				</li>
+			</ul>
+			<script>
+				var clientPeople = <%- JSON.stringify(serverPeople) %>; //<--
+			</script>
+			<script src="/assets/js/app.js"></script>
+		</body>
+	</html>
+```
+**public/js/app.js**
+```javascript
+
+	angular.module('TestApp', []);
+
+	angular.module('TestApp')
+		.controller('MainController', ctrlFunc);
+
+	function ctrlFunc() {
+		this.people = clientPeople;
+	}
+```
+#9.Build an app
+##1. Init
+*1 `npm init`
+*2 `npm install express --save-dev`
+*3 `npm install ejs --save-dev`
+*4 `npm install body-parser --save-dev`
+*5 `npm install mongoose --save-dev`
+
+**app.js**
+```javascript
+
+	var express = require('express');
+	var app = express();
+
+	var port = process.env.PORT || 3000;
+
+	app.use('/assets', express.static(__dirname + '/public'));
+
+	app.set('view engine', 'ejs');
+
+	app.listen(port);
+```
+##2. Connect to the Database
+mLab.com
+**config/config.json**
+```javascript
+
+	{
+		"uname":"test",
+		"pwd":"test"
+	}
+```
+**config/index.js**
+```javascript
+
+	var configValues = require('./config');
+
+	module.exports = {
+	    getDbConnectionString: function() {
+	        return `mongodb://${configValues.uname}:${configValues.pwd}@ds013212.mlab.com:13212/nodetodo`;
+	    }
+	}
+```
+**models/todoModel.js**
+```javascript
+
+	var mongoose = require('mongoose');
+
+	var Schema = mongoose.Schema;
+
+	var todoSchema = new Schema({
+	    username: String,
+	    todo: String,
+	    isDone: Boolean,
+	    hasAttachment: Boolean
+	});
+
+	var Todos = mongoose.model('Todos', todoSchema);
+
+	module.exports = Todos;
+```
+
+**app.js**
+```javascript
+
+	var express = require('express');
+	var app = express();
+	var mongoose = require('mongoose');
+	var config = require('./config');
+
+	var port = process.env.PORT || 3000;
+
+	app.use('/assets', express.static(__dirname + '/public'));
+
+	app.set('view engine', 'ejs');
+
+	mongoose.connect(config.getDbConnectionString());
+
+	app.listen(port);
+```
+##3. Adding Data
+
+**controllers/setupController.js**
+```javascript
+
+	var Todos = require('../models/todoModel');
+
+	module.exports = function(app) {
+
+	   app.get('/api/setupTodos', function(req, res) {
+
+	       // seed database
+	       var starterTodos = [
+	           {
+	               username: 'test',
+	               todo: 'Buy milk',
+	               isDone: false,
+	               hasAttachment: false
+	           },
+	           {
+	               username: 'test',
+	               todo: 'Feed dog',
+	               isDone: false,
+	               hasAttachment: false
+	           },
+	           {
+	               username: 'test',
+	               todo: 'Learn Node',
+	               isDone: false,
+	               hasAttachment: false
+	           }
+	       ];
+	       Todos.create(starterTodos, function(err, results) {
+	           res.send(results);
+	       });
+	   });
+
+	}
+```
+**app.js**
+```javascript
+
+	var express = require('express');
+	var app = express();
+	var mongoose = require('mongoose');
+	var config = require('./config');
+	var setupController = require('./controllers/setupController');
+
+	var port = process.env.PORT || 3000;
+
+	app.use('/assets', express.static(__dirname + '/public'));
+
+	app.set('view engine', 'ejs');
+
+	mongoose.connect(config.getDbConnectionString());
+	setupController(app);
+
+	app.listen(port);
+```
+Run
+`http://localhost:3000/api/setupTodos`
+
+##4. Create the API
+**controllers/apiController**
+```javascript
+
+	var Todos = require('../models/todoModel');
+	var bodyParser = require('body-parser');
+
+	module.exports = function(app) {
+
+	    app.use(bodyParser.json()); // Middleware
+	    app.use(bodyParser.urlencoded({ extended: true })); // Middleware
+
+	    app.get('/api/todos/:uname', function(req, res) {
+
+	        Todos.find({ username: req.params.uname }, function(err, todos) {
+	            if (err) throw err;
+
+	            res.send(todos);
+	        });
+
+	    });
+
+	    app.get('/api/todo/:id', function(req, res) {
+
+	       Todos.findById({ _id: req.params.id }, function(err, todo) {
+	           if (err) throw err;
+
+	           res.send(todo);
+	       });
+
+	    });
+
+	    app.post('/api/todo', function(req, res) {
+
+	        if (req.body.id) { // if i received an id I know that is an update
+	            Todos.findByIdAndUpdate(req.body.id, { todo: req.body.todo, isDone: req.body.isDone, hasAttachment: req.body.hasAttachment }, function(err, todo) {
+	                if (err) throw err;
+
+	                res.send('Success');
+	            });
+	        }
+
+	        else {
+
+	           var newTodo = Todos({
+	               username: 'test',
+	               todo: req.body.todo,
+	               isDone: req.body.isDone,
+	               hasAttachment: req.body.hasAttachment
+	           });
+	           newTodo.save(function(err) {
+	               if (err) throw err;
+	               res.send('Success');
+	           });
+
+	        }
+
+	    });
+
+	    app.delete('/api/todo', function(req, res) {
+
+	        Todos.findByIdAndRemove(req.body.id, function(err) {
+	            if (err) throw err;
+	            res.send('Success');
+	        })
+
+	    });
+
+	}
+```
+**app.js**
+```javascript
+
+	var express = require('express');
+	var app = express();
+	var mongoose = require('mongoose');
+	var config = require('./config');
+	var setupController = require('./controllers/setupController');
+	var apiController = require('./controllers/apiController');
+
+	var port = process.env.PORT || 3000;
+
+	app.use('/assets', express.static(__dirname + '/public'));
+
+	app.set('view engine', 'ejs');
+
+	mongoose.connect(config.getDbConnectionString());
+	setupController(app);
+	apiController(app);
+
+	app.listen(port);
+```
