@@ -96,8 +96,8 @@
 	- [4. Create the API](#4-create-the-api)
 
 <!-- /TOC -->
-#1.Intro
-##Needs to make a web server
+# 1.Intro
+## Needs to make a web server
 
 * Better ways to organize our code into reusable pieces
 * Ways to deal with files
@@ -107,8 +107,8 @@
 * A way to deal with work that takes long time
 
 
-#2.Modules, Export and Require
-##Modules
+# 2.Modules, Export and Require
+## Modules
 Reusable block of code whose existence does not accidentally impact other code
 
 **Common JS Modules**
@@ -150,7 +150,7 @@ A block of code that results in a value
 	});
 ```
 
-##Build a module
+## Build a module
 
 **app.js**
 ```javascript
@@ -167,13 +167,13 @@ A block of code that results in a value
 
 	module.exports = greet;
 ```
-####Name value pair
+#### Name value pair
 A name which maps to a value.
 The name can be defined more than once, but only can have one value in any given **context**
 `Address = "Sesam street"`
-####Object
+#### Object
 Collection of name/value pairs
-####Object Literal
+#### Object Literal
 Name/value pairs separated by commas and surrounded by curly braces
 ```javascript
 
@@ -416,8 +416,8 @@ Revealing module pattern: Exposing only the properties and methods you want via 
 	import * as greetr from 'greet';
 	greetr.greet();
 ```
-#3.Events And EventEmitter
-##Events
+# 3.Events And EventEmitter
+## Events
 Something that has happened in our application that we can respond to
 
 * **System Events**: C++ core (libuv)
@@ -692,7 +692,7 @@ We need the object that inherits to also have the `this`  methods and properties
 	}
 ```
 
-#4.Synchrony
+# 4.Synchrony
 Javascript is synchronous
 Node.js  is asynchronous
 #### libuv
@@ -823,7 +823,7 @@ In node read from Readable stream to a Writable stream
 A Method returns  an object so we can keep calling more methods.
 When it returns the parent object is called "cascading".
 
-#5.HTTP
+# 5.HTTP
 #### Protocol
 A set of rules two sides agree on the use communicating.
 IP : Internet Protocol. Addresses
@@ -948,7 +948,7 @@ Get data in the server from parameters in the http call.
 
 	}).listen(1337, '127.0.0.1');
 ```
-#6.NPM
+# 6.NPM
 #### Semantic Versioning
 MAYOR.MINOR.PATCH
 ## Package.json
@@ -982,7 +982,7 @@ They are stored at `/usr/local/lib/node_modules/npm/node_modules`
 #### nodemon
 It watches changes in the folder
 
-#7.Express
+# 7.Express
 ```javascript
 
 	var express = require('express');
@@ -1240,7 +1240,7 @@ Using controllers
 		});
 	}
 ```
-#8.MEAN
+# 8.MEAN
 #### DOM
 Document Object Model
 The structure browsers use to store and manage web pages
@@ -1380,8 +1380,8 @@ We can set in the server what we show in client
 		this.people = clientPeople;
 	}
 ```
-#9.Build an app
-##1. Init
+# 9.Build an app
+## 1. Init
 *1 `npm init`
 *2 `npm install express --save-dev`
 *3 `npm install ejs --save-dev`
@@ -1402,7 +1402,7 @@ We can set in the server what we show in client
 
 	app.listen(port);
 ```
-##2. Connect to the Database
+## 2. Connect to the Database
 mLab.com
 **config/config.json**
 ```javascript
@@ -1460,7 +1460,7 @@ mLab.com
 
 	app.listen(port);
 ```
-##3. Adding Data
+## 3. Adding Data
 
 **controllers/setupController.js**
 ```javascript
@@ -1522,7 +1522,7 @@ mLab.com
 Run
 `http://localhost:3000/api/setupTodos`
 
-##4. Create the API
+## 4. Create the API
 **controllers/apiController**
 ```javascript
 
